@@ -1,0 +1,147 @@
+"Valida los tipos de nivel"
+enum Level{
+    principiante
+    intermedio
+    avanzado
+}
+
+union GlobalSearch  = Course | Student | Monitor
+
+type DeletedCourse{
+    _id: ID!
+    title: String
+    teacher: String
+    description: String
+    topic: String
+}
+
+
+type Note{
+    _id: ID
+    note: Int
+    topic: String @deprecated
+}
+
+type Matter{
+    _id: ID
+    title: String
+    notes: [Note]
+}
+
+input NoteInput{
+    note: Int
+    topic: String
+}
+
+input MatterInput{
+    title: String
+}
+
+type Course{
+    _id: ID!
+    title: String!
+    teacher: String!
+    description: String!
+    topic: String
+    people: [Student]
+    level: Level
+}
+
+type Query {
+  "Devuelve todos cursos"
+  getCourses: [Course],
+  
+  "get all notes"
+  getNotes: [Note],
+  
+  "get all matters"
+  getMatters: [Matter],
+  
+  "Devuelve un curso"
+  getCourse(id:ID!):Course
+  
+  "get all students"
+  getStudents: [Person]
+  
+  "get student"
+  getStudent(id:ID!): [Person]
+  
+  "get matter"
+  getMatter(id:ID!):Matter
+  
+  "get all elements"
+  searchItems(keyword: String!): [GlobalSearch]
+}
+
+input StudentInput{
+    name: String
+    email: String!
+}
+
+input StudentEditInput{
+    name: String
+    email: String!
+}
+
+interface Person{
+    _id: ID
+    name: String
+    email: String
+}
+
+type Student implements Person{
+    _id: ID
+    name: String
+    email: String
+}
+
+type Monitor implements Person{
+    _id: ID!
+    name: String
+    email: String!
+    phone: String
+}
+
+input CourseInput{
+    title: String!,
+    teacher: String,
+    description: String!
+    topic: String
+    level: Level
+}
+
+input CourseEditInput{
+    title: String,
+    teacher: String,
+    description: String
+    topic: String
+}
+
+type Mutation{
+    "Create one note"
+    createNote(input:NoteInput!):Note
+    
+    "Create matter"
+    createMatter(input:MatterInput!):Matter
+    
+    "Create un curso" 
+    createCourse(input:CourseInput!):Course
+    
+    "edit course"
+    editCourse(id:ID!,input:CourseEditInput!):Course
+    
+    "create a new student"
+    createStudent(input:StudentInput!):Student
+    
+    "edit student"
+    editStudent(id:ID!,input:StudentEditInput!):Student
+    
+    "delete one course"
+    deleteCourse(id:ID!):DeletedCourse
+    
+    "add new people to course"
+    addPeople(courseID: ID!, personID: ID!): Course
+    
+    "add new note to matter"
+    addNote(matterID: ID!, noteID: ID!):Matter
+}
